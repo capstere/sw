@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Return of the JESP</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Nedräkningstimer -->
+    <div id="countdown"></div>
+    
+    <!-- Startknapp -->
+    <button id="start-button" aria-label="Starta Star Wars-introt">
+      MAY THE JESP BE WITH YOU
+    </button>
+    
+    <!-- Intro-text (blå) -->
+    <div id="intro-text">
+      A long time ago, in a cepheid far,<br>far away...
+    </div>
+    
+    <!-- Logotyp -->
+    <div id="logo">
+      <img src="static/images/starwars_logo.png" alt="Star Wars Logo" />
+    </div>
+    
+    <!-- Crawl-text -->
+    <div id="crawl-container">
+      <div class="crawl">
+        <p class="episode">Episode Rev. J</p>
+        <p class="title"><strong>RETURN OF THE JESP</strong></p>
+        <p>Senator TUKA har skickat ut fjärrprober...</p>
+        <p>Ingen visste om de prövningar som skulle komma – JESP måste UNLEARN!</p>
+        <p>Galaxens öde hänger i beroende…</p>
+        <p>Därtill följer en episk strid om galaxens framtid – en saga om mod, förlust och hopp.</p>
+      </div>
+    </div>
+    
+    <!-- Planetbild -->
+    <img id="planet-effect" src="static/images/planet.png" alt="Planet" />
+    
+    <!-- Final text och knappar -->
+    <div id="main-title">RETURN OF THE JESP</div>
+    <div id="buttons">
+      <button class="btn" data-sound="fraga1.mp3">Why?</button>
+      <button class="btn" data-sound="fraga2.mp3">When?</button>
+      <button class="btn" data-sound="fraga3.mp3">How?</button>
+      <button class="btn" data-sound="do_it.mp3">What?</button>
+    </div>
+    
+    <!-- Ljud -->
+    <audio id="bgMusic" src="static/sounds/starwars_theme.mp3" preload="auto"></audio>
+    <audio id="soundPlayer"></audio>
+    
+    <!-- Script -->
+    <script src="script.js"></script>
+  </body>
+</html>
