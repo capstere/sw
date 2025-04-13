@@ -6,6 +6,7 @@ const CONFIG = {
   introDuration: 6000,           // 0–6 s: Intro-text
   delayAfterIntro: 2000,         // 6–8 s: Vänta tills logotypen ska starta
   logoAnimationDuration: 12000,  // Från t=8 s till t=20 s (12 s)
+  bgMusic: 11500,
   crawlDuration: 30000,          // Från t=19 s till t=49 s (30 s)
   planetDuration: 8000,          // Från t=49 s till t=57 s (8 s)
   finalFadeDuration: 3000        // Från t=57 s och framåt
