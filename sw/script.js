@@ -6,7 +6,7 @@ const CONFIG = {
   introDuration: 6000,           // 0–6 s: Intro-textens längd (ms)
   delayAfterIntro: 2000,         // 6–8 s: Extra väntetid innan logotypen visas (ms)
   logoAnimationDuration: 12000,  // Från t=8 s till t=20 s: Logotypens animering (ms)
-  crawlDuration: 12000,          // Från t=16 s till t=46 s: Crawl-textens animering (ms)
+  crawlDuration: 10000,          // Från t=16 s till t=46 s: Crawl-textens animering (ms)
   planetDuration: 8000,          // Från t=46 s till t=54 s: Planetanimationens längd (ms)
   finalFadeDuration: 3000        // Från t=54 s och framåt: Final fade-in (ms)
 };
@@ -51,13 +51,12 @@ async function startIntro() {
   await sleep(CONFIG.introDuration);
   introText.style.display = "none";
 
-  // 3. Vänta extra 2 s tills t=8 s
+  // 3. Vänta extra 2 s tills t=8 s (totalt 8 s från start)
   await sleep(CONFIG.delayAfterIntro);
 
-  // 4. Vid t=8 s: Visa logotypen (logotypen animeras via CSS) – låt musiken fortsätta spela utan att återställas
+  // 4. Vid t=8 s: Visa logotypen – bakgrundsmusiken startade redan vid klicket
   const logo = document.getElementById("logo");
   logo.style.display = "block";
-  // (Notera: Ljudet startades redan vid klick – se event listener nedan)
 
   // 5. Vänta 8 s (t=8–16 s) medan logotypen visas
   await sleep(8000);
@@ -78,7 +77,7 @@ async function startIntro() {
   planetEffect.style.display = "block";
   await sleep(CONFIG.planetDuration);
 
-  // 10. Vid t=54 s: Visa final text och knappar (fade-in enligt CSS)
+  // 10. Vid t=54 s: Visa final text och knappar (fade-in via CSS)
   const mainTitle = document.getElementById("main-title");
   const buttons = document.getElementById("buttons");
   mainTitle.style.display = "block";
@@ -91,6 +90,7 @@ async function startIntro() {
  *******************************/
 function playSound(file) {
   const soundPlayer = document.getElementById("soundPlayer");
+  // Stoppar och återställer tidigare spelning innan en ny ljudfil spelas
   soundPlayer.pause();
   soundPlayer.currentTime = 0;
   soundPlayer.src = `static/sounds/${file}`;
@@ -103,15 +103,25 @@ function playSound(file) {
  * Event Listeners & Initiering
  *******************************/
 document.getElementById("start-button").addEventListener("click", async () => {
-  // Se till att bakgrundsmusiken startas direkt vid klicket
+  // Säkerställ att bakgrundsmusiken inte är muted, och ta bort muted-attributet
   const bgMusic = document.getElementById("bgMusic");
-  bgMusic.muted = false;                // Använd false (booleskt värde)
-  bgMusic.removeAttribute("muted");     // Tar bort muted-attributet om det finns
+  bgMusic.muted = false;
+  bgMusic.removeAttribute("muted");
   try {
-    await bgMusic.play();               // Spela upp ljudet direkt vid klick
+    await bgMusic.play();  // Starta bgMusic direkt vid klicket
   } catch (error) {
     console.error("Audio playback failed:", error);
   }
+  
   updateCountdown();
   startIntro();
+});
+
+document.querySelectorAll("#buttons .btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const soundFile = button.dataset.sound;
+    if (soundFile) {
+      playSound(soundFile);
+    }
+  });
 });
