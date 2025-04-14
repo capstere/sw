@@ -3,12 +3,12 @@
  *******************************/
 const CONFIG = {
   countdownTargetDate: "2025-05-01T00:00:00", // Exempelmåldatum
-  introDuration: 6000,           // 0–6 s: Intro-text
-  delayAfterIntro: 2000,         // 6–8 s: Vänta tills logotypen ska starta
-  logoAnimationDuration: 12000,  // Från t=8 s till t=20 s (12 s)
-  crawlDuration: 30000,          // Från t=16 s till t=46 s (30 s)
-  planetDuration: 8000,          // Från t=46 s till t=54 s (8 s)
-  finalFadeDuration: 3000        // Från t=54 s och framåt
+  introDuration: 6000,           // 0–6 s: Intro-textens längd (ms)
+  delayAfterIntro: 2000,         // 6–8 s: Extra väntetid innan logotypen visas (ms)
+  logoAnimationDuration: 12000,  // Från t=8 s till t=20 s: Logotypens animering (ms)
+  crawlDuration: 12000,          // Från t=16 s till t=46 s: Crawl-textens animering (ms)
+  planetDuration: 8000,          // Från t=46 s till t=54 s: Planetanimationens längd (ms)
+  finalFadeDuration: 3000        // Från t=54 s och framåt: Final fade-in (ms)
 };
 
 /*******************************
@@ -48,36 +48,25 @@ async function startIntro() {
   // 2. Visa intro-texten (0–6 s)
   const introText = document.getElementById("intro-text");
   introText.style.display = "block";
-  await sleep(CONFIG.introDuration);  // 6000 ms
+  await sleep(CONFIG.introDuration);
   introText.style.display = "none";
 
-  // 3. Vänta extra 2 s tills t=8 s (totalt 8 s från start)
+  // 3. Vänta extra 2 s tills t=8 s
   await sleep(CONFIG.delayAfterIntro);
 
-  // 4. Vid t=8 s: Visa logotypen och starta bakgrundsmusiken
+  // 4. Vid t=8 s: Visa logotypen (logotypen animeras via CSS) – låt musiken fortsätta spela utan att återställas
   const logo = document.getElementById("logo");
-  const bgMusic = document.getElementById("bgMusic");
-
-  // Ta bort muted-attributet och avmuta ljudet
-  bgMusic.muted = false;
-  bgMusic.removeAttribute("muted");
-
   logo.style.display = "block";
-  try {
-    bgMusic.currentTime = 0;
-    await bgMusic.play();
-  } catch (error) {
-    console.error("Audio playback failed:", error);
-  }
+  // (Notera: Ljudet startades redan vid klick – se event listener nedan)
 
-  // 5. Vänta 8 s (nu t=16 s) – logotypen visas från t=8 s till t=16 s
+  // 5. Vänta 8 s (t=8–16 s) medan logotypen visas
   await sleep(8000);
 
   // 6. Vid t=16 s: Visa crawl-texten
   const crawlContainer = document.getElementById("crawl-container");
   crawlContainer.style.display = "block";
 
-  // 7. Vänta 4 s (nu t=20 s) och dölj logotypen
+  // 7. Vänta 4 s (t=16–20 s) och dölj logotypen
   await sleep(4000);
   logo.style.display = "none";
 
@@ -110,19 +99,19 @@ function playSound(file) {
   });
 }
 
-document.querySelectorAll("#buttons .btn").forEach(button => {
-  button.addEventListener("click", () => {
-    const soundFile = button.dataset.sound;
-    if (soundFile) {
-      playSound(soundFile);
-    }
-  });
-});
-
 /*******************************
  * Event Listeners & Initiering
  *******************************/
 document.getElementById("start-button").addEventListener("click", async () => {
+  // Se till att bakgrundsmusiken startas direkt vid klicket
+  const bgMusic = document.getElementById("bgMusic");
+  bgMusic.muted = false;                // Använd false (booleskt värde)
+  bgMusic.removeAttribute("muted");     // Tar bort muted-attributet om det finns
+  try {
+    await bgMusic.play();               // Spela upp ljudet direkt vid klick
+  } catch (error) {
+    console.error("Audio playback failed:", error);
+  }
   updateCountdown();
   startIntro();
 });
