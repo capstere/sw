@@ -118,5 +118,17 @@ document.querySelectorAll("#buttons .btn").forEach(button => {
 /*******************************
  * Event Listeners & Initiering
  *******************************/
-document.getElementById("start-button").addEventListener("click", startIntro);
+
+document.getElementById("start-button").addEventListener("click", async () => {
+  const bgMusic = document.getElementById("bgMusic");
+  bgMusic.muted = false;  // Avmuta
+  try {
+    bgMusic.currentTime = 0;
+    await bgMusic.play();
+  } catch (error) {
+    console.error("Ljuduppspelning misslyckades:", error);
+  }
+  startIntro();
+});
+
 updateCountdown();
