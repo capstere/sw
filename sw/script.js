@@ -58,6 +58,7 @@ async function startIntro() {
   // 4. Vid t=8 s: Visa logotypen och starta bakgrundsmusiken
   const logo = document.getElementById("logo");
   const bgMusic = document.getElementById("bgMusic");
+  bgMusic.muted = false;  // Avmuta
   logo.style.display = "block";
   try {
     bgMusic.currentTime = 0;
@@ -120,15 +121,5 @@ document.querySelectorAll("#buttons .btn").forEach(button => {
  *******************************/
 
 document.getElementById("start-button").addEventListener("click", async () => {
-  const bgMusic = document.getElementById("bgMusic");
-  bgMusic.muted = false;  // Avmuta
-  try {
-    bgMusic.currentTime = 0;
-    await bgMusic.play();
-  } catch (error) {
-    console.error("Ljuduppspelning misslyckades:", error);
-  }
-  startIntro();
-});
 
 updateCountdown();
