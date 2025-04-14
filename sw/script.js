@@ -6,10 +6,9 @@ const CONFIG = {
   introDuration: 6000,           // 0–6 s: Intro-text
   delayAfterIntro: 2000,         // 6–8 s: Vänta tills logotypen ska starta
   logoAnimationDuration: 12000,  // Från t=8 s till t=20 s (12 s)
-  bgMusic: 11500,
-  crawlDuration: 30000,          // Från t=19 s till t=49 s (30 s)
-  planetDuration: 8000,          // Från t=49 s till t=57 s (8 s)
-  finalFadeDuration: 3000        // Från t=57 s och framåt
+  crawlDuration: 30000,          // Från t=16 s till t=46 s (30 s)
+  planetDuration: 8000,          // Från t=46 s till t=54 s (8 s)
+  finalFadeDuration: 3000        // Från t=54 s och framåt
 };
 
 /*******************************
@@ -58,35 +57,39 @@ async function startIntro() {
   // 4. Vid t=8 s: Visa logotypen och starta bakgrundsmusiken
   const logo = document.getElementById("logo");
   const bgMusic = document.getElementById("bgMusic");
-  bgMusic.muted = false;  // Avmuta
+
+  // Ta bort muted-attributet och avmuta ljudet
+  bgMusic.muted = false;
+  bgMusic.removeAttribute("muted");
+
   logo.style.display = "block";
   try {
     bgMusic.currentTime = 0;
-    bgMusic.play();
+    await bgMusic.play();
   } catch (error) {
     console.error("Audio playback failed:", error);
   }
 
-  // 5. Vänta 8 s (nu t=16 s) – logotypen är kvar tills crawl ska börja
-  await sleep(8000);  // ändrat från tidigare 11 s till 8 s
+  // 5. Vänta 8 s (nu t=16 s) – logotypen visas från t=8 s till t=16 s
+  await sleep(8000);
 
-  // 6. Vid t=16 s: Visa crawl-texten (ändrar starttiden för crawlen)
+  // 6. Vid t=16 s: Visa crawl-texten
   const crawlContainer = document.getElementById("crawl-container");
   crawlContainer.style.display = "block";
 
-  // 7. Vänta 4 s (nu t=20 s) och dölj logotypen (så att logotypen visas mellan t=8 och t=20 s)
+  // 7. Vänta 4 s (nu t=20 s) och dölj logotypen
   await sleep(4000);
   logo.style.display = "none";
 
-  // 8. Låt crawl-texten animera från t=16 s till t=46 s (30 s varaktighet; du kan också justera detta om du vill)
+  // 8. Låt crawl-texten animera från t=16 s till t=46 s
   await sleep(CONFIG.crawlDuration);
 
-  // 9. Vid t=46 s: Visa planet-effekten (justera tidpunkten vid behov)
+  // 9. Vid t=46 s: Visa planet-effekten
   const planetEffect = document.getElementById("planet-effect");
   planetEffect.style.display = "block";
   await sleep(CONFIG.planetDuration);
 
-  // 10. Vid t=54 s: Visa final text och knappar (fade-in styrs av CSS)
+  // 10. Vid t=54 s: Visa final text och knappar (fade-in enligt CSS)
   const mainTitle = document.getElementById("main-title");
   const buttons = document.getElementById("buttons");
   mainTitle.style.display = "block";
@@ -119,7 +122,7 @@ document.querySelectorAll("#buttons .btn").forEach(button => {
 /*******************************
  * Event Listeners & Initiering
  *******************************/
-
 document.getElementById("start-button").addEventListener("click", async () => {
-
-updateCountdown();
+  updateCountdown();
+  startIntro();
+});
